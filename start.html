@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="start.css">
+    <title>巩森特制国际象棋</title>
+</head>
+<body>
+   
+    <h1>用户登录</h1>
+    <div id="loginForm">
+        <label for="username">用户名:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">密码:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <input type="button" value="登录" id="loginButton">
+    </div>
+
+    <script>
+       document.getElementById("loginButton").addEventListener("click", function(event) {
+        event.preventDefault(); 
+
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        fetch("http://localhost:5003/api/login", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Basic " + btoa(username + ":" + password)
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            var found = false;
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].username === username && data[i].password === password) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                // 登录成功后进行页面跳转
+                window.location.href = "chess.html";
+            } else {
+                alert("用户名或密码错误");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    });
+    </script>
+</body>
+</html>
